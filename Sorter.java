@@ -1,8 +1,5 @@
-//CS201 Assignment4
-//Nicole Fella
-
 /**
- * This class has 4 static methods for sorting an array of Comparables.
+ * This class has 5 static methods for sorting an array of Comparables.
  * Referenced API (http://docs.oracle.com/javase/7/docs/api/java/lang/Comparable.html)
  */
 public class Sorter {
@@ -273,15 +270,78 @@ public class Sorter {
 			}
 		}
 	}
-	
-	public static void main(String[] args)
-	{
-		Integer[] a = {9,4,2,1,4,6,9};
-	
-		mergeSort(a);
-		System.out.println("\n MergeSort: ");
-		for (int i=0; i<a.length; i++)
-			System.out.print(a[i] + ", ");
 
+
+	/**
+	 * Input: array of comparable items. Output: array, sorted.
+	 * Method: partition input into two pieces (divided by pivot element), recursively sort partitions and append.
+	 * This method will only call the recursiveQuickSort() method
+	 */
+	public static void quickSort(Comparable[] array)
+	{
+		//call helper method for recursion
+		recursiveQuickSort(array, 0, array.length-1);
 	}
+	/**
+	 * recursive quick sort with base case of array length 1 (only contains pivot).
+	 * Thinking input will be comparable array, lo index, hi index.
+	 * Need to copy array into temporary variable for partitioning values to remain there
+	 */
+	public static void recursiveQuickSort(Comparable[] array, int lo, int hi)
+	{
+		if(lo<=hi){
+			//create temporary array to take values from
+			Comparable[] arrayVals = new Comparable[array.length];
+			for (int i=0; i<arrayVals.length;i++)
+				arrayVals[i] = array[i];
+			
+			//base case -- only contains pivot
+			if(lo==hi)
+			{
+				return;
+			}
+			/**
+			 * recursive case - pick pivot and call recursive quick sort on left and right partitions
+			 */
+			//assign element called pivot randomly --> pivotP = point(index) of pivot
+			int pivotP = lo + (int)(Math.random()*(hi-lo));
+			Comparable pivotValue = arrayVals[pivotP];
+			//create indexes for left partition and right partition
+			//only need to keep track of leftHi and rightLo
+			int leftHi = lo;
+			int rightLo = hi;
+			//split input into two pieces (left containing elements less than pivot, right containing all rest)
+			for (int currentIndex = lo; currentIndex<=hi; currentIndex++)
+			{
+				if(currentIndex != pivotP)
+				{
+					//	if the value at an index is less than the pivotValue
+					if (arrayVals[currentIndex].compareTo(pivotValue)<0)
+					{
+						//store to left partition
+						array[leftHi] = arrayVals[currentIndex];
+						//update leftHi variable -- but remember last update be where pivot stored
+						leftHi++;
+					}
+					//if the value at the index is greater than the pivotValue (all else)
+					else if (arrayVals[currentIndex].compareTo(pivotValue)>=0)
+					{
+						//store to right partition
+						array[rightLo] = arrayVals[currentIndex];
+						//update rightLo variable -- but remember last update will be where pivot
+						rightLo--;
+					}
+				}
+			}
+			//place pivot in the middle
+			if(leftHi==rightLo){
+				array[leftHi] = pivotValue;
+			}
+			//recursively sort two pieces: left partition and right partition, excluding pivot
+			recursiveQuickSort(array, lo, leftHi-1);
+			recursiveQuickSort(array, rightLo+1, hi);
+			//append pieces
+		}
+	}
+	
 }
